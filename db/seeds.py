@@ -2,11 +2,27 @@
 #
 # Example:
 # from yourapp.models import User
-from palooza.models.palooza import Palooza
+from palooza.models import Palooza, Node
 
-initial_palooza = {
+palooza_dict = {
     'name': '202412',
     'description': 'Winter 2024',
 }
-if Palooza.find_by_name(initial_palooza['name']) is None:
-    Palooza(**initial_palooza).save()
+palooza = Palooza.find_by_name(palooza_dict['name'])
+if palooza is None:
+    palooza = Palooza(**palooza_dict).save()
+
+
+node_1 = {
+    'name': 'server1',
+    'palooza': palooza
+}
+if Node.find_by_name(node_1['name']) is None:
+    Node(**node_1).save()
+
+node_2 = {
+    'name': 'server2',
+    'palooza': palooza,
+}
+if Node.find_by_name(node_2['name']) is None:
+    Node(**node_2).save()

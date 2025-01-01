@@ -1,13 +1,16 @@
+from dataclasses import dataclass
 from typing import List, Optional
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy_serializer import SerializerMixin
 
 from palooza import db
 from palooza.models.node import Node
 
 
-class Palooza(db.Model):
+class Palooza(db.Model, SerializerMixin):
     __tablename__ = "paloozas"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
     description: Mapped[Optional[str]]
@@ -22,6 +25,6 @@ class Palooza(db.Model):
         db.session.commit()
 
         return self
-    
-    def __repr__(self) -> str:
-        return f"Palooza(id={self.id!r}, name={self.name!r}, description={self.description!r})"
+
+    # def __repr__(self) -> str:
+    #     return f"Palooza(id={self.id!r}, name={self.name!r}, description={self.description!r})"
