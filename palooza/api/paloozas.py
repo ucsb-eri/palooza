@@ -2,11 +2,10 @@ from flask import Blueprint, jsonify
 from sqlalchemy import select
 from palooza.models import Palooza, Config
 
-index = Blueprint('index', __name__)
+paloozas = Blueprint('paloozas', __name__)
 
-@index.route('/', defaults={'page': 'index'})
-@index.route('/<page>')
-def show(page):
+@paloozas.get('/paloozas')
+def show():
     current_palooza = Config.current_palooza()
 
     # print(current_palooza)

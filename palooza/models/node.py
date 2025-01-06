@@ -1,3 +1,4 @@
+import enum
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -6,12 +7,20 @@ from sqlalchemy_serializer import SerializerMixin
 from palooza import db
 
 
+class Status(enum.Enum):
+    PLANNED = "PLANNED"
+    IN_PROGRESS = "IN_PROGRESS"
+    ISSUES = "ISSUES"
+    COMPLETE = "COMPLETE"
+
+
 class Node(db.Model, SerializerMixin):
     __tablename__ = "nodes"
     serialize_rules = ("-palooza_id", "-palooza")
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
+    status: Mapped[Status] = mapped_column(default=Status.PLANNED)
     palooza_id: Mapped[int] = mapped_column(ForeignKey("paloozas.id"))
     palooza: Mapped["Palooza"] = relationship(back_populates="nodes")
 
