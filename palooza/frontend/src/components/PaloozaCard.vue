@@ -14,6 +14,6 @@ const dragStart = (event, card) => {
     draggable="true"
     @dragstart="dragStart($event, card)"
   >
-    {{ card.title }}
+    {{ card.name }}
   </div>
 </template>

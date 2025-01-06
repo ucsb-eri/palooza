@@ -1,45 +1,27 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useFetch } from '@vueuse/core'
 import PaloozaColumn from './PaloozaColumn.vue'
 
-const url = ref('http://localhost:1234/')
-const refetch = ref(false)
+const emit = defineEmits(['updateStatus'])
 
-// const toggleRefetch = useToggle(refetch)
+enum Status {
+  PLANNED = "PLANNED",
+  IN_PROGRESS = "IN_PROGRESS",
+  ISSUES = "ISSUES",
+  COMPLETE = "COMPLETE"
+}
+const statuses = Object.keys(Status)
 
-const { data, error, abort, statusCode, isFetching, isFinished, canAbort, execute } = useFetch(
-  url,
-  { refetch },
-).get()
 
-console.log(data)
+const props = defineProps(['nodes'])
 
-// const text = stringify(reactive({
-// isFinished,
-// isFetching,
-// canAbort,
-// statusCode,
-// //   error,
-// //   data: computed(() => {
-// //     try {
-// //       return JSON.parse(data.value as string)
-// //     }
-// //     catch (e) {
-// //       return null
-// //     }
-// //   }),
-// }))
-
-const cards = ref([
-  { id: 1, title: 'Task 1', status: 'New' },
-  // Add more cards with various statuses
-])
-const columnStatuses = ['New', 'To Do', 'In Progress', 'Done']
-const moveCard = (cardId, newStatus) => {
-  const card = cards.value.find((card) => card.id === cardId)
+const moveCard = (nodeId, newStatus) => {
+  const card = props.nodes.find((node) => node.id === nodeId)
   if (card) {
     card.status = newStatus
+    emit('updateStatus', {nodeId: nodeId, status: newStatus})
+
   }
 }
 </script>
@@ -47,10 +29,10 @@ const moveCard = (cardId, newStatus) => {
 <template>
   <div class="palooza-board flex flex-row justify-around p-5 bg-gray-100 min-h-screen min-w-full">
     <PaloozaColumn
-      v-for="status in columnStatuses"
+      v-for="status in statuses"
       :key="status"
       :status="status"
-      :cards="cards.filter((card) => card.status === status)"
+      :cards="nodes.filter((node) => node.status === status)"
       @moveCard="moveCard"
     ></PaloozaColumn>
   </div>
