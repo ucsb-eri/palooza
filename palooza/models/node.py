@@ -20,9 +20,11 @@ class Node(db.Model, SerializerMixin):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
-    status: Mapped[Status] = mapped_column(default=Status.PLANNED)
+    os_name: Mapped[str] = mapped_column()
+    os_version: Mapped[str] = mapped_column()
     palooza_id: Mapped[int] = mapped_column(ForeignKey("paloozas.id"))
     palooza: Mapped["Palooza"] = relationship(back_populates="nodes")
+    status: Mapped[Status] = mapped_column(default=Status.PLANNED)
 
     @classmethod
     def find_by_name(cls, name):
