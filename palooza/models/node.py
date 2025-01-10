@@ -1,10 +1,12 @@
 import enum
+from typing import List
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy_serializer import SerializerMixin
 
 from palooza import db
+from palooza.models.palooza import palooza_node
 
 
 class Status(enum.Enum):
@@ -16,14 +18,17 @@ class Status(enum.Enum):
 
 class Node(db.Model, SerializerMixin):
     __tablename__ = "nodes"
-    serialize_rules = ("-palooza_id", "-palooza")
+    # serialize_only=("id")
+    serialize_rules = ("-paloozas.nodes",)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
     os_name: Mapped[str] = mapped_column()
     os_version: Mapped[str] = mapped_column()
-    palooza_id: Mapped[int] = mapped_column(ForeignKey("paloozas.id"))
-    palooza: Mapped["Palooza"] = relationship(back_populates="nodes")
+    # palooza_id: Mapped[int] = mapped_column(ForeignKey("paloozas.id"))
+    paloozas: Mapped[List["Palooza"]] = relationship(
+        secondary=palooza_node, back_populates="nodes"
+    )
     status: Mapped[Status] = mapped_column(default=Status.PLANNED)
 
     @classmethod
