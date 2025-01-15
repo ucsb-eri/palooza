@@ -4,25 +4,22 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 from flask_cors import CORS
 from palooza.models import *
+import tomllib
 
-settings = {
-    "SQLALCHEMY_DATABASE_URI": "sqlite:///palooza",
-    "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-    "FLASK_DB_SEEDS_PATH": "db/seeds.py",
-}
-
+from flask_jwt_extended import JWTManager
 
 def create_app():
     app = Flask(__name__, static_folder="frontend/dist", static_url_path="/app")
+    app.config.from_file("config.toml", load=tomllib.load, text=False)
     CORS(app, origins=["http://localhost:5173"])
-    app.config.update(settings)
-
+    jwt = JWTManager(app)
     # print(db.)
     db.init_app(app)
     # print(db.engine)
 
-    from palooza.api import nodes, paloozas
+    from palooza.api import login, nodes, paloozas
 
+    app.register_blueprint(login, url_prefix="/api")
     app.register_blueprint(nodes, url_prefix="/api")
     app.register_blueprint(paloozas, url_prefix="/api")
 
