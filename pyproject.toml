@@ -7,7 +7,7 @@ name = "palooza"
 description = "Rebootapalooza manager"
 authors = [{ name = "Tjaart van der Walt", email = "tjaart@ucsb.edu" }]
 dynamic = ["version"]
-dependencies = ["flask", "flask-cors", "Flask-SQLAlchemy", "Flask-DB", "sqlalchemy-serializer"]
+dependencies = ["flask", "flask-cors", "flask-jwt-extended", "Flask-SQLAlchemy", "Flask-DB", "ldap3", "sqlalchemy-serializer"]
 
 [project.scripts]
 palooza = "palooza:main"
